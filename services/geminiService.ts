@@ -1,19 +1,20 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Initialize the client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const streamGeminiResponse = async (
   history: { role: 'user' | 'model'; text: string }[],
   newMessage: string,
   onChunk: (text: string) => void
 ) => {
+  // Check inside the function to avoid crashing the whole app at startup if key is missing
   if (!process.env.API_KEY) {
-    onChunk("Lo siento, el servicio de concierge no está disponible en este momento (API Key missing).");
+    onChunk("Lo siento, el servicio de concierge no está configurado correctamente (Falta API Key).");
     return;
   }
 
   try {
+    // Initialize the client here to ensure we use the current environment variable
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
     const chat = ai.chats.create({
       model: 'gemini-2.5-flash',
       config: {
