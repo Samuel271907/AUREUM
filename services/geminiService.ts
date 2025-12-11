@@ -1,16 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = process.env.API_KEY || '';
-
 // Initialize the client
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const streamGeminiResponse = async (
   history: { role: 'user' | 'model'; text: string }[],
   newMessage: string,
   onChunk: (text: string) => void
 ) => {
-  if (!apiKey) {
+  if (!process.env.API_KEY) {
     onChunk("Lo siento, el servicio de concierge no está disponible en este momento (API Key missing).");
     return;
   }
